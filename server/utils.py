@@ -1,0 +1,9 @@
+PORT = 8080
+CREATE_REGEX = r'create [\d]* [a-z]* [a-z]*$'
+UPDATE_REGEX = r'update [\d]* [a-z]* [a-z]*$'
+DELETE_REGEX = r'delete [\d]*$'
+READ_REGEX = r'read [\d]*$'
+HELP = r'help$'
+NO_SUCH_ID_ERROR = "There is no configuration with the config id provided"
+OPERATION_SUCCESSFUL = 'Success!'
+ALREADY_ID_ERROR = "There is already a configuration with the provided config id"
