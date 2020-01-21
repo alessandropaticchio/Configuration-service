@@ -64,7 +64,7 @@ class Client():
             user_input = input('What do you want to do?\n')
             self.parse(user_input)
 
-    def run(self):
+    def run(self, port=PORT):
         print('Here is what you can do: \n \n'
               'Create a new config: create {ID} {NAME} {VALUE}\n'
               'Read an existing config: read {ID}\n'
@@ -77,6 +77,5 @@ class Client():
 
 if __name__ == '__main__':
     client = Client()
-    print('Hello! Welcome to Alessandro Paticchio\'s coding test for Buildo!\n')
     client.run()
 

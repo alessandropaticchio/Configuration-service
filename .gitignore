@@ -6,3 +6,5 @@
 .idea/modules.xml
 .idea/workspace.xml
 server/__pycache__/utils.cpython-37.pyc
+__pycache__/utils.cpython-37.pyc
+*.pyc
