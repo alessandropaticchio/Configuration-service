@@ -1,7 +1,8 @@
+from utils import *
+from threading import Lock
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import cgi
-from utils import *
 import psycopg2
 
 
@@ -38,11 +39,15 @@ class MyHandler(BaseHTTPRequestHandler):
             # Fetch data and create a dictionary to send to the client
             name, value = res[0][1], res[0][2]
             config = {'id': config_id, 'name': name, 'value': value}
-            self.reply(response_code=200, content_type='application/json', answer=config)
+            response_code = 200
+            content_type = 'application/json'
+            answer = config
         else:
             # Send error message back
-            self.reply(response_code=400, content_type='text/plain', answer=NO_SUCH_ID_ERROR)
-            return
+            response_code=400
+            content_type='text/plain'
+            answer = NO_SUCH_ID_ERROR
+        self.reply(response_code=response_code, content_type=content_type, answer=answer)
 
     # POST echoes the message adding a JSON field
     def do_POST(self):
@@ -64,6 +69,8 @@ class MyHandler(BaseHTTPRequestHandler):
 
         connection_db, cursor = self.connect_to_DB()
 
+        content_type = 'text/plain'
+
         try:
             with connection_db:
                 name = message['name']
@@ -72,11 +79,14 @@ class MyHandler(BaseHTTPRequestHandler):
                 cursor.execute('INSERT into configuration(id, name, value) VALUES(%s,%s,%s)', (config_id,
                                                                                                 name,
                                                                                                 value))
-
-                self.reply(response_code=200, content_type='text/plain', answer=OPERATION_SUCCESSFUL)
+                response_code = 200
+                answer = OPERATION_SUCCESSFUL
+                self.reply(response_code=response_code, content_type=content_type, answer=answer)
         except psycopg2.errors.UniqueViolation:
             # Send error message back
-             self.reply(response_code=400, content_type='text/plain', answer=ALREADY_ID_ERROR)
+            response_code = 400
+            answer = ALREADY_ID_ERROR
+            self.reply(response_code=response_code, content_type=content_type, answer=answer)
 
 
     def do_PUT(self):
@@ -98,22 +108,27 @@ class MyHandler(BaseHTTPRequestHandler):
         # Elaborate the request
         config_id = message['id']
 
-        with connection_db:
-            # Add the updated config to the DB
-            name = message['name']
-            value = message['value']
+        with self.server.lock:
+            with connection_db:
+                # Add the updated config to the DB
+                name = message['name']
+                value = message['value']
 
-            # Check if the config to update exists
-            cursor.execute('SELECT * FROM configuration WHERE id=%s', (config_id,))
-            res = cursor.fetchall()
+                # Check if the config to update exists
+                cursor.execute('SELECT * FROM configuration WHERE id=%s', (config_id,))
+                res = cursor.fetchall()
 
-            # If the config to update exists, the operation is done. Otherwise an error message is sent back
-            if len(res) != 0:
-                cursor.execute('UPDATE configuration SET name=%s, value=%s WHERE id=%s', (name, value, config_id))
-                self.reply(response_code=200, content_type='text/plain', answer=OPERATION_SUCCESSFUL)
-            else:
-                # Send error message back
-                self.reply(response_code=400, content_type='text/plain', answer=NO_SUCH_ID_ERROR)
+                # If the config to update exists, the operation is done. Otherwise an error message is sent back
+                if len(res) != 0:
+                    cursor.execute('UPDATE configuration SET name=%s, value=%s WHERE id=%s', (name, value, config_id))
+                    response_code = 200
+                    answer = OPERATION_SUCCESSFUL
+                else:
+                    # Send error message back
+                    response_code = 400
+                    answer = NO_SUCH_ID_ERROR
+                content_type = 'text/plain'
+                self.reply(response_code=response_code, content_type=content_type, answer=answer)
 
     def do_DELETE(self):
         # Get ID from the request path
@@ -122,21 +137,27 @@ class MyHandler(BaseHTTPRequestHandler):
         # Connect to DB
         connection_db, cursor = self.connect_to_DB()
 
-        with connection_db:
+        with self.server.lock:
+            with connection_db:
 
-            # Check if the config to delete exists
-            cursor.execute('SELECT * FROM configuration WHERE id=%s', (config_id, ))
-            res = cursor.fetchall()
+                # Check if the config to delete exists
+                cursor.execute('SELECT * FROM configuration WHERE id=%s', (config_id, ))
+                res = cursor.fetchall()
 
-            # If the config to delete exists, the operation is done. Otherwise an error message is sent back
-            if len(res) != 0:
-                cursor.execute('DELETE FROM configuration WHERE id=%s', (config_id,))
-                self.reply(response_code=200, content_type='text/plain', answer=OPERATION_SUCCESSFUL)
-            else:
-                # Send error message back
-                self.reply(response_code=400, content_type='text/plain', answer=NO_SUCH_ID_ERROR)
+                # If the config to delete exists, the operation is done. Otherwise an error message is sent back
+                if len(res) != 0:
+                    cursor.execute('DELETE FROM configuration WHERE id=%s', (config_id,))
+                    response_code = 200
+                    answer = OPERATION_SUCCESSFUL
+                else:
+                    # Send error message back
+                    response_code = 400
+                    answer = NO_SUCH_ID_ERROR
+                content_type = 'text/plain'
+                self.reply(response_code=response_code, content_type=content_type, answer=answer)
 
-    def connect_to_DB(self):
+    @staticmethod
+    def connect_to_DB():
 
         # DB connection
         connection_db = psycopg2.connect(
@@ -155,15 +176,17 @@ class MyHandler(BaseHTTPRequestHandler):
 class MyServer(HTTPServer):
     def __init__(self, server_address, handler_class):
         super().__init__(server_address=server_address, RequestHandlerClass=handler_class)
+        self.lock = Lock()
+        self.KEEP_ALIVE = True
 
-
-def run(port=PORT, server_class=MyServer, handler_class=MyHandler):
-    server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
-
-    print('Starting configuration server on port %d...' % PORT)
-    httpd.serve_forever()
+    def run(self):
+        while self.KEEP_ALIVE:
+            self.serve_forever()
 
 
 if __name__ == "__main__":
-    run()
+    server_address = ('', PORT)
+    httpd = MyServer(server_address, MyHandler)
+
+    print('Starting configuration server on port %d...' % PORT)
+    httpd.run()
