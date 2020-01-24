@@ -4,6 +4,7 @@ import re
 from utils import *
 import socket
 
+
 class Client():
 
     '''
@@ -128,8 +129,8 @@ class Client():
         print(COMMAND_MESSAGE)
         self.read_input()
 
+
 if __name__ == '__main__':
     print(WELCOME_MESSAGE)
     client = Client()
     client.start()
-

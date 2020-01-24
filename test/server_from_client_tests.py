@@ -106,7 +106,8 @@ def update_not_existing_config(test_client):
 if __name__ == '__main__':
     server_address = ('', PORT)
     httpd = MyServer(server_address, MyHandler)
-    print('Starting configuration server on port %d...' % PORT)
+    print('Starting configuration service on port %d...' % PORT)
+    print('Testing...')
     thread_server = threading.Thread(target=httpd.run)
     thread_server.start()
 
