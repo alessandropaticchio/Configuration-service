@@ -5,6 +5,7 @@ import cgi
 import psycopg2
 from socketserver import ThreadingMixIn
 
+
 class MyHandler(BaseHTTPRequestHandler):
     def __init__(self, request, client_address, server):
         BaseHTTPRequestHandler.__init__(self, request, client_address, server)
@@ -232,10 +233,9 @@ class MyHandler(BaseHTTPRequestHandler):
 class MyServer(ThreadingMixIn, HTTPServer):
     def __init__(self, server_address, handler_class):
         super().__init__(server_address=server_address, RequestHandlerClass=handler_class)
-        self.KEEP_ALIVE = True
 
     def run(self):
-        while self.KEEP_ALIVE:
+        while True:
             self.handle_request()
 
 
