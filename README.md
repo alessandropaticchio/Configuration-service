@@ -17,7 +17,7 @@ Configurations have the form:
 The architecture is a basic 3-tier, with Client, Server and Database.
 
 * The client is a simple Command Line Interface, that parses the input of the user and craft HTTP requests accordingly.
-  I decided to implement this client to make it easier to test the project.
+  I decided to implement this client to make the interaction easier.
 * The server is a web server, developed by using the Python built-in support HTTPServer. 
 * The database is a relational database, hosted by the PaaS Heroku, with only one table with the following structure:
 
