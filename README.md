@@ -36,7 +36,7 @@ The chosen DBMS is PostgreSQL, which is Open Source and allows a better manipula
 Before starting, it is necessary to create a new Virtual Environment and install all the dependencies of the project.
 
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ### How to run
