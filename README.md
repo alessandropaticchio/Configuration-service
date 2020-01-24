@@ -82,7 +82,7 @@ Otherwise an error is signaled.
 
 ### How to make requests outside the client
 
-Of course the server is accessible even outside the client.
+Of course the server is accessible even outside the client, via curl.
 
 In order to make GET/DELETE requests for an ID, it will listen at:
 
@@ -106,6 +106,15 @@ with a JSON Object in the body:
     "value": "This is the value for configuration Foo"
     
 }
+```
+
+Sample requests:
+
+```
+GET: curl http://localhost:8080/?id
+POST: curl -H 'Content-Type: application/json' -X POST -d '{"id":"id","name":"name","value":"value"}' http://localhost:8080  
+PUT: curl -H 'Content-Type: application/json' -X PUT -d '{"id":"id","name":"name","value":"value"}' http://localhost:8080  
+DELETE: curl -X DELETE http://localhost:8080/?444
 ```
 
 ### Tests
