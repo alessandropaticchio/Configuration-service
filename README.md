@@ -74,8 +74,8 @@ update ID NAME VALUE
 
 * The "create" operation will craft a POST request, with a JSON Object in the body
 * The "read" operation will craft a GET request, with the ID in the request's parameters
-* The "delete" operation will craft a DELETE request, , with the ID in the request's parameters
 * The "update" operation will craft an UPDATE request, with a JSON Object in the body
+* The "delete" operation will craft a DELETE request, , with the ID in the request's parameters
 
 The server will reply with JSON objects containing the response, if the request is consistent.
 Otherwise an error is signaled.
@@ -137,4 +137,4 @@ The logic of the server is totally contained in the file server.py, in the class
 This class contains all the methods do_GET(), do_POST(), do_PUT(), do_DELETE(), which are called whenever a new request must be handled.
 Therefore, in order to add new functions one should look into these methods.
 
-In particular, the methods do_POST() and do_PUT() are meant to get some JSON data from the client, therefore one could change the structure of the JSON Object that the methods expect, and add some additional fields to distinguish between some new operations the developer wants to do, besides the create primitive.
+In particular, the methods do_POST() and do_PUT() are meant to get some JSON data from the client, therefore one could change the structure of the JSON Object that the methods expect, and add some additional fields to distinguish between some new operations the developers want to create, besides the create primitive.
