@@ -39,7 +39,7 @@ Before starting, it is necessary to create a new Virtual Environment and install
 pip install -r requirements.txt
 ```
 
-### How to run
+## How to run
 
 Once all the dependencies are installed, just activate your Python Virtual Environment, go in the directory of the project
 and launch the server.
@@ -132,4 +132,9 @@ client_to_server_tests.py
 server_from_client_tests.py
 ```
 
-### How to contribute
+## How to contribute
+The logic of the server is totally contained in the file server.py, in the class MyHandler.
+This class contains all the methods do_GET(), do_POST(), do_PUT(), do_DELETE(), which are called whenever a new request must be handled.
+Therefore, in order to add new functions one should look into these methods.
+
+In particular, the methods do_POST() and do_PUT() are meant to get some JSON data from the client, therefore one could change the structure of the JSON Object that the methods expect, and add some additional fields to distinguish between some new operations the developer wants to do, besides the create primitive.
