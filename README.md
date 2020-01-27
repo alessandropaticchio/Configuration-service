@@ -16,7 +16,7 @@ Configurations have the form:
 ## Architecture
 The architecture is a basic 3-tier, with Client, Server and Database.
 
-* The client is a simple Command Line Interface, that parses the input of the user and craft HTTP requests accordingly.
+* The client is a simple Command Line Interface, that parses the input of the user and crafts HTTP requests accordingly.
   I decided to implement this client to make the interaction easier.
 * The server is a web server, developed by using the Python built-in support HTTPServer. 
 * The database is a relational database, hosted by the PaaS Heroku, with only one table with the following structure:
@@ -138,3 +138,9 @@ This class contains all the methods do_GET(), do_POST(), do_PUT(), do_DELETE(), 
 Therefore, in order to add new functions one should look into these methods.
 
 In particular, the methods do_POST() and do_PUT() are meant to get some JSON data from the client, therefore one could change the structure of the JSON Object that the methods expect, and add some additional fields to distinguish between some new operations the developers want to create, besides the create primitive.
+
+# For the future
+
+I implemented the service with the idea that the user only knows the ID of a configuration.
+Instead, it would be nice to expand with other types of queries, based on the name or the value of the configurations.
+The database storage will make the implementation of these queries easier for future developers.
