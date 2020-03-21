@@ -1,5 +1,5 @@
-# Coding Test Buildo
-This repository contains my Coding Test for Buildo. It is a Python 3.7 implementation of a configuration service, accessible via
+# Configuration service
+This repository contains a Python 3.7 implementation of a configuration service, accessible via
 HTTP API, that stores configurations and allows to create, read, update and delete them.
 Configurations have the form:
 
